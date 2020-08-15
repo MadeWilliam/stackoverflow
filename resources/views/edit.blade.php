@@ -2,14 +2,14 @@
 
 @section('content')
     <div class="ml-2 mt-2">
-        <form action="{{route('pertanyaan.update', $pertanyaan->id)}}" method="post">
+        <form action="{{ route('pertanyaan.update', $pertanyaan->id) }}" method="post">
             @csrf
             @method('PUT')
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Pertanyaan ke-{{$pertanyaan->id}} </h3>
+                    <h3 class="card-title">Edit Pertanyaan ke-{{ $pertanyaan->id }} </h3>
                 </div>
-               <div class="card-body">
+                <div class="card-body">
                     <div class="form-group">
                         <label for="judul">Judul</label>
                         <input type="text" class="form-control" value="{{ old('judul', $pertanyaan->judul) }}" id="judul"
@@ -27,12 +27,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="tag">Tags</label>
-                        <input type="tag" class="form-control" value="{{ old('tag', '') }}" id="tag"
-                            placeholder="Masukkan Tags" name="tag">
-                        @error('tag')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
+                        <label for="tags">Tags</label>
+                        <input type="tags" class="form-control" value="{{ old('tags', $tags_str)}}"
+                                id="tags" placeholder="Masukkan Tag, pisahkan dengan koma" name="tags">
+                                
+                            @error('tag')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
                     </div>
                 </div>
                 <div class="card-footer">

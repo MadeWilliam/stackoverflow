@@ -15,7 +15,8 @@ class PertanyaanController extends Controller
      */
     public function index()
     {
-        $pertanyaan = Pertanyaan::all();
+        $pertanyaan = Pertanyaan::with('pertanyaanHasTag')->get();
+        // dd($pertanyaan);
         return view('index', compact('pertanyaan'));
     }
 
@@ -42,13 +43,13 @@ class PertanyaanController extends Controller
             'isi' => 'required'
         ]);
 
-        // dd($request->all());
+        dd($request->all());
 
         $tags_arr = explode(',', $request["tags"]);
 
-        
+
         $tag_ids = [];
-        
+
         foreach ($tags_arr as $tag_name) {
             $tag = Tag::where("nama", $tag_name)->first();
             if ($tag) {
@@ -69,6 +70,7 @@ class PertanyaanController extends Controller
 
         $pertanyaan->pertanyaanHasTag()->sync($tag_ids);
 
+        // dd($pertanyaan);
 
         // $pertanyaan->pertanyaanHasTag()->sync([$request->tag_id]);
 
@@ -86,8 +88,8 @@ class PertanyaanController extends Controller
      */
     public function show($id)
     {
-        // dd($id);
         $pertanyaan = Pertanyaan::findOrFail($id);
+        // dd($pertanyaan->pertanyaanHasTag);
         return view('show', compact('pertanyaan'));
     }
 
@@ -99,8 +101,19 @@ class PertanyaanController extends Controller
      */
     public function edit($id)
     {
-        $pertanyaan = Pertanyaan::findOrFail($id);
-        return view('edit', compact('pertanyaan'));
+        $pertanyaan = Pertanyaan::with('pertanyaanHasTag')->findOrFail($id);
+
+        $tags_str = '';
+        $tag_arr = [];
+        foreach ($pertanyaan->pertanyaanHasTag as $tag) {
+            $tag_arr[] = $tag->nama;
+        }
+
+        $tags_str = implode(',', $tag_arr);
+
+        // dd($pertanyaan);
+
+        return view('edit', compact('pertanyaan', 'tags_str'));
     }
 
     /**
@@ -119,6 +132,26 @@ class PertanyaanController extends Controller
             'judul' => 'required|unique:pertanyaan,judul,' . $id,
             'isi' => 'required'
         ]);
+
+        // dd($request);
+
+        $tags_arr = explode(',', $request["tag"]);
+
+
+        $tag_ids = [];
+
+        foreach ($tags_arr as $tag_name) {
+            $tag = Tag::where("nama", $tag_name)->first();
+            if ($tag) {
+                $tag_ids[] = $tag->id;
+            } else {
+                $new_tag = Tag::create(["nama" => $tag_name]);
+                // dd($new_tag);
+                $tag_ids[] = $new_tag->id;
+            }
+        }
+
+        $pertanyaan->pertanyaanHasTag()->sync($tag_ids);
 
         // dd($request->all());
         $pertanyaan->update([
