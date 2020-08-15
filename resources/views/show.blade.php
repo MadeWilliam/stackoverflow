@@ -19,11 +19,15 @@
                 <p>
                     {{ $pertanyaan->isi }}
                 </p>
-                @empty($pertanyaan->isi)
-                    <p>
-                        Tidak ada tag
-                    </p>
-                @endempty
+                <div>
+                    Tags :
+                    @forelse ($pertanyaan->pertanyaanHasTag as $tag)
+                    <button class="btn btn-primary btn-sm">{{$tag->nama}}</button>
+                        
+                    @empty
+                        No Tags
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>

@@ -26,9 +26,9 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="tag">Tags</label>
-                        <input type="tag" class="form-control" value="{{ old('tag', '') }}" id="tag"
-                            placeholder="Masukkan Tags" name="tag">
+                        <label for="tags">Tags</label>
+                        <input type="tags" class="form-control" value="{{ old('tags', '') }}" id="tags"
+                            placeholder="Masukkan Tag, pisahkan dengan koma" name="tags">
                         @error('tag')
                         <div class="alert alert-danger">{{ $message }}</div>
                         @enderror

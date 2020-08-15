@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Tag;
 use App\Pertanyaan;
 use Illuminate\Http\Request;
 
@@ -43,11 +44,33 @@ class PertanyaanController extends Controller
 
         // dd($request->all());
 
+        $tags_arr = explode(',', $request["tags"]);
+
+        
+        $tag_ids = [];
+        
+        foreach ($tags_arr as $tag_name) {
+            $tag = Tag::where("nama", $tag_name)->first();
+            if ($tag) {
+                $tag_ids[] = $tag->id;
+            } else {
+                $new_tag = Tag::create(["nama" => $tag_name]);
+                // dd($new_tag);
+                $tag_ids[] = $new_tag->id;
+            }
+        }
+
         $pertanyaan = Pertanyaan::create([
             'judul' => $request->judul,
             'isi' => $request->isi
         ]);
 
+        // dd($tag_ids);
+
+        $pertanyaan->pertanyaanHasTag()->sync($tag_ids);
+
+
+        // $pertanyaan->pertanyaanHasTag()->sync([$request->tag_id]);
 
         // dd($pertanyaan);
 
